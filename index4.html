@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#06154a" />
+  <title>Dragon Gems 500 — Virtual Coin Demo</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root{
+      --bg1:#120f4b;
+      --bg2:#062b73;
+      --gold:#ffbd27;
+      --gold2:#fff06a;
+      --orange:#ff751f;
+      --blue:#1f9dff;
+      --purple:#7b2cff;
+      --panel:#0c2b75;
+      --panel2:#132f8a;
+      --danger:#ff3f2f;
+      --green:#36dc86;
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#fff;background:#061a52}
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 50% -8%, #ffe8a6 0, rgba(255,197,61,.40) 12%, transparent 32%),
+        radial-gradient(circle at 12% 35%, rgba(117,92,255,.28), transparent 25%),
+        radial-gradient(circle at 90% 48%, rgba(0,218,255,.2), transparent 28%),
+        linear-gradient(180deg,var(--bg1) 0%,#4f218b 18%,#0e78ba 48%,#06346f 100%);
+    }
+    body:before{
+      content:"";
+      position:fixed;inset:0;pointer-events:none;opacity:.20;
+      background-image:
+        radial-gradient(circle at 20% 20%, #fff 0 1px, transparent 2px),
+        radial-gradient(circle at 75% 30%, #fff 0 1px, transparent 2px),
+        radial-gradient(circle at 48% 55%, #fff 0 1px, transparent 2px),
+        radial-gradient(circle at 88% 78%, #fff 0 1px, transparent 2px);
+      background-size:190px 220px,260px 280px,220px 250px,310px 300px;
+    }
+    .app{width:min(100%,540px);margin:0 auto;padding:12px 10px 22px;position:relative}
+    .brand{text-align:center;margin:8px 0 8px}
+    .brand-title{
+      display:inline-block;font-weight:1000;font-size:clamp(34px,10vw,64px);
+      letter-spacing:-3px;line-height:.95;
+      color:#ffe22e;text-shadow:0 4px 0 #9b3000,0 7px 14px rgba(0,0,0,.4);
+      transform:skew(-7deg);
+    }
+    .brand-title .num{
+      color:#ff2ef2;
+      text-shadow:0 3px 0 #6f0fa6, 0 0 9px #ffd7ff;
+      font-style:normal;
+      margin-left:8px;
+    }
+    .subnote{
+      font-size:10px;letter-spacing:1.2px;color:#d6e8ff;margin-top:4px;opacity:.9
+    }
+    .skyline{position:relative;height:105px;margin:0 3px 2px;overflow:hidden;border-radius:18px 18px 0 0}
+    .sun{position:absolute;width:220px;height:220px;border-radius:50%;left:50%;top:-150px;transform:translateX(-50%);
+      background:radial-gradient(circle,#fff6d1 0,#ffd67b 25%,rgba(255,170,74,.25) 55%,transparent 70%);
+      filter:blur(1px)
+    }
+    .temple{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:74%;height:75%;
+      filter:drop-shadow(0 8px 8px rgba(0,0,0,.3));opacity:.86
+    }
+    .temple .roof{position:absolute;left:5%;right:5%;height:18px;background:#ffbb55;border:3px solid #d77a1c;border-radius:50% 50% 15% 15%/70% 70% 25% 25%}
+    .temple .roof:before,.temple .roof:after{content:"";position:absolute;top:-12px;width:32%;height:13px;background:#ffd66f;border:2px solid #c46a17;border-radius:50% 50% 0 0}
+    .temple .roof:before{left:-8%}.temple .roof:after{right:-8%}
+    .temple .r1{top:4%}.temple .r2{top:34%;transform:scale(.78)}.temple .r3{top:62%;transform:scale(.55)}
+    .temple .base{position:absolute;left:12%;right:12%;bottom:2%;height:44%;background:linear-gradient(#e78323,#ba4b18);border:3px solid #7d310d;border-radius:5px 5px 0 0}
+    .temple .door{position:absolute;left:43%;bottom:0;width:14%;height:55%;background:#5e2313;border:2px solid #f8b74e;border-radius:10px 10px 0 0}
+    .cloud{position:absolute;border-radius:50%;background:rgba(226,219,255,.25);filter:blur(4px)}
+    .c1{width:110px;height:28px;left:5%;top:43%}.c2{width:140px;height:34px;right:2%;top:28%}.c3{width:90px;height:24px;right:24%;top:61%}
+
+    .multiplier-bar{
+      position:relative;margin:0 0 10px;padding:8px 8px 11px;
+      background:linear-gradient(180deg,#0b80df,#1553c6 55%,#0c2e92);
+      border:3px solid #ffae22;border-radius:42px 42px 24px 24px;
+      box-shadow:inset 0 0 0 2px #7d2e02, var(--shadow)
+    }
+    .multiplier-bar:before{
+      content:"";position:absolute;left:10%;right:10%;bottom:-2px;height:10px;border-radius:50%;
+      background:rgba(0,0,0,.14)
+    }
+    .mrow{display:grid;grid-template-columns:1fr 1fr 1.1fr 1fr 1fr;gap:6px;align-items:center}
+    .orb{
+      min-height:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+      border-radius:50%;
+      border:4px solid #e8c36b;
+      box-shadow:inset 0 0 10px rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.3);
+      font-weight:1000;text-align:center
+    }
+    .orb small{font-size:10px;opacity:.95}
+    .o1{background:radial-gradient(circle at 35% 25%,#ffd4ff,#fc39a9 45%,#7f127e);font-size:28px}
+    .o2{background:radial-gradient(circle at 35% 25%,#ecffff,#68f1ff 22%,#6f2cff 56%,#1a0b84);font-size:24px}
+    .o3{background:radial-gradient(circle at 35% 25%,#fff9bb,#ff9b19 40%,#b14403);font-size:27px}
+    .o4{background:radial-gradient(circle at 35% 25%,#fff,#bcd0e3 38%,#477086);font-size:26px}
+    .center-orb{min-height:86px;background:radial-gradient(circle at 35% 23%,#ffe99e,#ff9a1c 19%,#ea1878 50%,#8e003a 78%);position:relative;font-size:15px}
+    .center-orb b{font-size:31px;line-height:1}
+    .center-orb i{position:absolute;top:2px;font-size:24px;color:#ffcb1a;text-shadow:0 2px 0 #863400}
+
+    .machine{
+      position:relative;padding:8px 7px 13px;margin:0 2px;
+      background:linear-gradient(180deg,#f8a62b 0,#d3620c 2%,#d87a15 95%,#8a3508);
+      border:4px solid #7c2a05;border-radius:16px 16px 9px 9px;
+      box-shadow:inset 0 0 0 2px #ffd76d,var(--shadow)
+    }
+    .machine:before{
+      content:"";position:absolute;inset:7px;border:2px solid rgba(255,230,123,.55);border-radius:10px;pointer-events:none
+    }
+    .reels{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;position:relative;z-index:1}
+    .reel{
+      min-height:265px;display:grid;grid-template-rows:repeat(3,1fr);gap:5px;padding:5px;
+      background:linear-gradient(180deg,#ffba35,#da6b11);
+      border:3px solid #8e3304;border-radius:8px;overflow:hidden
+    }
+    .cell{
+      display:flex;align-items:center;justify-content:center;
+      min-height:78px;border-radius:10px;border:2px solid #e99c1d;
+      background:radial-gradient(circle at 50% 25%,#fff5ba,#ffb21f 35%,#d86d09 78%,#9e3e05);
+      box-shadow:inset 0 0 0 2px rgba(255,238,156,.2), inset 0 -6px 0 rgba(107,25,0,.18)
+    }
+    .cell .symbol{font-size:54px;filter:drop-shadow(0 4px 3px rgba(0,0,0,.35));user-select:none}
+    .cell.gem-red .symbol{color:#ff2948}.cell.gem-blue .symbol{color:#28d9ff}
+    .cell.gem-gold .symbol{color:#ffd21c}.cell.dragon .symbol{font-size:50px}
+    .reels.spinning .cell .symbol{animation:shake .12s linear infinite}
+    @keyframes shake{0%{transform:translateY(-6px)}50%{transform:translateY(6px)}100%{transform:translateY(-6px)}}
+    .payline{height:5px;border-radius:999px;background:#ffed42;box-shadow:0 0 11px #ffe600;position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);opacity:.9;z-index:2;pointer-events:none}
+
+    .offers{display:grid;grid-template-columns:1fr 1fr 1.05fr;gap:6px;margin:11px 0}
+    .offer{
+      min-height:84px;padding:9px 6px;border-radius:16px;text-align:center;
+      border:3px solid #ffcf3d;background:linear-gradient(180deg,#ff2c58,#7621dc);
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.12),var(--shadow)
+    }
+    .offer small{display:block;color:#fff;font-weight:900;font-size:10px;text-transform:uppercase}
+    .offer b{display:block;font-size:22px;color:#ffe24a;text-shadow:0 2px 0 #7b2300;margin:3px 0}
+    .offer span{font-size:12px;font-weight:1000;line-height:1.05}
+    .offer.buy{background:linear-gradient(180deg,#ff4a21,#a40014);cursor:pointer}
+    .offer.buy:active{transform:scale(.98)}
+
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin:3px 0}
+    .stat{
+      min-height:60px;display:flex;align-items:center;justify-content:center;gap:9px;
+      padding:7px 4px;border-radius:14px;background:linear-gradient(180deg,#1a4f88,#183a78);
+      border:2px solid rgba(74,185,255,.55);box-shadow:inset 0 0 16px rgba(0,150,255,.15)
+    }
+    .stat i{font-size:17px;color:#ffbf2e}.stat .label{display:block;font-size:9px;color:#d4e7ff}.stat strong{font-size:21px}
+    .bet-stat{border-color:#9e49ff}.win-stat{border-color:#1ddf91}.balance-stat{border-color:#2cbcff}
+
+    .controls{display:grid;grid-template-columns:72px 1fr 72px;gap:14px;align-items:center;margin-top:11px}
+    .round{
+      width:68px;height:68px;border-radius:50%;border:3px solid #0b7eae;
+      background:radial-gradient(circle at 35% 25%,#42e6ff,#1484d4 48%,#07508d);
+      color:#bff7ff;font-size:30px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.22),0 6px 14px rgba(0,0,0,.32)
+    }
+    .spin{
+      position:relative;min-height:84px;border-radius:50px;border:4px solid #ffe071;
+      background:radial-gradient(circle at 35% 25%,#ff562b,#e51c0e 36%,#bd0010 68%,#70000a);
+      box-shadow:inset 0 0 0 4px rgba(255,211,95,.32),0 9px 17px rgba(0,0,0,.34);
+      color:#fff3ba;font-size:32px;font-weight:1000;letter-spacing:.8px
+    }
+    .spin:after{content:"";position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(255,244,187,.55)}
+    .spin .spin-text{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px}
+    button{font:inherit;cursor:pointer}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .utility-row{display:flex;justify-content:space-between;gap:8px;margin-top:9px;flex-wrap:wrap}
+    .mini{
+      border:1px solid rgba(255,255,255,.18);background:rgba(5,33,93,.58);color:#fff;border-radius:999px;padding:8px 11px;font-size:11px
+    }
+    .mini.on{background:#1a975f}
+    .history{margin-top:10px;background:rgba(4,20,59,.55);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px}
+    .history h3{margin:0 0 7px;font-size:12px;color:#ffd75a}
+    #historyList{display:flex;gap:6px;overflow:auto;scrollbar-width:none}
+    #historyList span{flex:none;padding:6px 8px;border-radius:999px;background:#163c85;font-size:10px}
+    .foot{margin-top:10px;text-align:center;font-size:9px;color:#c9dbf5;opacity:.84;line-height:1.4}
+
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translate(-50%,18px);
+      background:rgba(0,0,0,.84);padding:11px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.22s;z-index:20;border:1px solid rgba(255,255,255,.16)
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.66);display:none;align-items:center;justify-content:center;padding:18px;z-index:30}
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(100%,430px);background:linear-gradient(180deg,#153878,#091e53);border:2px solid #54caff;border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .modal h2{margin:0 0 8px;color:#ffd23e}.modal p{font-size:12px;line-height:1.55;color:#d9e7ff}
+    .modal .close{width:100%;padding:10px;border-radius:12px;border:0;background:#f0a31c;color:#2b1600;font-weight:900}
+    @media (max-width:420px){
+      .reel{min-height:230px}.cell{min-height:67px}.cell .symbol{font-size:45px}.cell.dragon .symbol{font-size:42px}
+      .controls{grid-template-columns:62px 1fr 62px;gap:9px}.round{width:60px;height:60px}.spin{min-height:76px}
+      .offer b{font-size:19px}.offer span{font-size:10px}.stat strong{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="brand">
+      <div class="brand-title">Dragon Gems <span class="num">500</span></div>
+      <div class="subnote">VIRTUAL-COIN DEMO • NO DEPOSITS • NO WITHDRAWALS</div>
+    </header>
+
+    <section class="skyline" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+      <div class="temple">
+        <div class="roof r1"></div><div class="roof r2"></div><div class="roof r3"></div>
+        <div class="base"><div class="door"></div></div>
+      </div>
+    </section>
+
+    <section class="multiplier-bar">
+      <div class="mrow">
+        <div class="orb o1">25x</div>
+        <div class="orb o2">500x</div>
+        <div class="orb center-orb"><i class="fa-solid fa-dragon"></i><small>NUDGE</small><b>1.0</b></div>
+        <div class="orb o3">100x</div>
+        <div class="orb o4">2x</div>
+      </div>
+    </section>
+
+    <section class="machine" id="machine">
+      <div class="payline"></div>
+      <div class="reels" id="reels">
+        <div class="reel" data-reel="0"></div>
+        <div class="reel" data-reel="1"></div>
+        <div class="reel" data-reel="2"></div>
+      </div>
+    </section>
+
+    <section class="offers">
+      <div class="offer"><small>Exbet</small><b>0.30</b><span>ONLY 2X ↑<br>MULTIPLIER</span></div>
+      <div class="offer"><small>Exbet</small><b>1.60</b><span>ONLY 10X ↑<br>MULTIPLIER</span></div>
+      <button class="offer buy" id="buyFeature"><small>BUY FEATURE</small><b>50.00</b><span>VIRTUAL COINS</span></button>
+    </section>
+
+    <section class="stats">
+      <div class="stat balance-stat"><i class="fa-solid fa-wallet"></i><div><span class="label">BALANCE</span><strong id="balance">100.00</strong></div></div>
+      <div class="stat win-stat"><i class="fa-solid fa-trophy"></i><div><span class="label">WIN</span><strong id="win">0.00</strong></div></div>
+      <div class="stat bet-stat"><i class="fa-solid fa-coins"></i><div><span class="label">BET</span><strong id="bet">0.30</strong></div></div>
+    </section>
+
+    <section class="controls">
+      <button class="round" id="minusBtn" aria-label="Decrease bet"><i class="fa-solid fa-minus"></i></button>
+      <button class="spin" id="spinBtn"><span class="spin-text"><i class="fa-solid fa-rotate"></i> SPIN</span></button>
+      <button class="round" id="plusBtn" aria-label="Increase bet"><i class="fa-solid fa-plus"></i></button>
+    </section>
+
+    <div class="utility-row">
+      <button class="mini" id="autoBtn"><i class="fa-solid fa-play"></i> AUTO SPIN</button>
+      <button class="mini" id="soundBtn"><i class="fa-solid fa-volume-high"></i> SOUND</button>
+      <button class="mini" id="infoBtn"><i class="fa-solid fa-circle-info"></i> PAYTABLE</button>
+      <button class="mini" id="resetBtn"><i class="fa-solid fa-arrow-rotate-left"></i> RESET</button>
+    </div>
+
+    <section class="history">
+      <h3>RECENT DEMO SPINS</h3>
+      <div id="historyList"></div>
+    </section>
+
+    <div class="foot">
+      This is an entertainment/demo slot simulation using virtual coins only.<br>
+      No real-money wagering, payments, deposits, or withdrawals are implemented.
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h2>Dragon Gems 500 — Demo Paytable</h2>
+      <p><b>🐉🐉🐉</b> = 500× bet &nbsp; • &nbsp; <b>🔴🔴🔴</b> = 100× bet</p>
+      <p><b>🔷🔷🔷</b> = 25× bet &nbsp; • &nbsp; <b>🟡🟡🟡</b> = 10× bet</p>
+      <p><b>Any two matching symbols in the center line</b> = 2× bet.</p>
+      <p>Feature purchase costs 50 virtual coins and starts a five-spin bonus round. The demo uses locally stored virtual balance only.</p>
+      <button class="close" id="closeModal">CLOSE</button>
+    </div>
+  </div>
+
+  <script>
+    const SYMBOLS = [
+      {key:"dragon", icon:"🐉", label:"Dragon", three:500},
+      {key:"gem-red", icon:"🔴", label:"Ruby", three:100},
+      {key:"gem-blue", icon:"🔷", label:"Sapphire", three:25},
+      {key:"gem-gold", icon:"🟡", label:"Topaz", three:10}
+    ];
+
+    const state = {
+      balance: Number(localStorage.getItem("dragonBalance") ?? 100),
+      bet: Number(localStorage.getItem("dragonBet") ?? 0.30),
+      win: 0,
+      spinning: false,
+      auto: false,
+      sound: true,
+      bonusSpins: 0,
+      history: JSON.parse(localStorage.getItem("dragonHistory") || "[]")
+    };
+
+    const reels = [...document.querySelectorAll(".reel")];
+    const reelsWrap = document.getElementById("reels");
+    const balanceEl = document.getElementById("balance");
+    const winEl = document.getElementById("win");
+    const betEl = document.getElementById("bet");
+    const toastEl = document.getElementById("toast");
+    const spinBtn = document.getElementById("spinBtn");
+    const autoBtn = document.getElementById("autoBtn");
+    const soundBtn = document.getElementById("soundBtn");
+
+    function money(n){ return Math.max(0,n).toFixed(2); }
+    function save(){
+      localStorage.setItem("dragonBalance", state.balance.toFixed(2));
+      localStorage.setItem("dragonBet", state.bet.toFixed(2));
+      localStorage.setItem("dragonHistory", JSON.stringify(state.history.slice(0,20)));
+    }
+    function updateUI(){
+      balanceEl.textContent = money(state.balance);
+      betEl.textContent = money(state.bet);
+      winEl.textContent = money(state.win);
+      autoBtn.classList.toggle("on", state.auto);
+      autoBtn.innerHTML = state.auto
+        ? '<i class="fa-solid fa-stop"></i> STOP AUTO'
+        : '<i class="fa-solid fa-play"></i> AUTO SPIN';
+      soundBtn.classList.toggle("on", state.sound);
+      soundBtn.innerHTML = state.sound
+        ? '<i class="fa-solid fa-volume-high"></i> SOUND'
+        : '<i class="fa-solid fa-volume-xmark"></i> MUTED';
+    }
+
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(showToast.t);
+      showToast.t = setTimeout(()=>toastEl.classList.remove("show"), 1500);
+    }
+
+    function beep(freq=420, ms=70, type="sine"){
+      if(!state.sound) return;
+      try{
+        const C = window.AudioContext || window.webkitAudioContext;
+        const ctx = new C();
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.value=.035;
+        o.connect(g); g.connect(ctx.destination); o.start();
+        setTimeout(()=>{o.stop();ctx.close()}, ms);
+      }catch{}
+    }
+
+    function pick(){
+      const r = Math.random();
+      if(r < .22) return SYMBOLS[0];
+      if(r < .50) return SYMBOLS[1];
+      if(r < .78) return SYMBOLS[2];
+      return SYMBOLS[3];
+    }
+
+    function makeCell(symbol){
+      const cell = document.createElement("div");
+      cell.className = `cell ${symbol.key}`;
+      cell.dataset.key = symbol.key;
+      cell.innerHTML = `<span class="symbol">${symbol.icon}</span>`;
+      return cell;
+    }
+
+    function renderInitial(){
+      reels.forEach(reel=>{
+        reel.innerHTML = "";
+        for(let i=0;i<3;i++) reel.appendChild(makeCell(SYMBOLS[(i+1)%SYMBOLS.length]));
+      });
+    }
+
+    function setColumn(reel, symbols){
+      reel.innerHTML = "";
+      symbols.forEach(s=>reel.appendChild(makeCell(s)));
+    }
+
+    function getCenterLine(){
+      return reels.map(reel => reel.children[1].dataset.key);
+    }
+
+    function evaluate(line, bet, feature=false){
+      const [a,b,c] = line;
+      let mult = 0;
+      if(a===b && b===c){
+        const sym = SYMBOLS.find(s=>s.key===a);
+        mult = sym.three;
+      } else if(a===b || b===c || a===c){
+        mult = 2;
+      }
+      if(feature && mult>0) mult *= 2;
+      return mult;
+    }
+
+    function pushHistory(text){
+      state.history.unshift(text);
+      state.history = state.history.slice(0,20);
+      const list = document.getElementById("historyList");
+      list.innerHTML = state.history.map(x=>`<span>${x}</span>`).join("");
+      save();
+    }
+
+    function animateReel(reel, finalSymbols, delay){
+      return new Promise(resolve=>{
+        setTimeout(()=>{
+          reel.classList.add("spinning");
+          let ticks=0;
+          const timer=setInterval(()=>{
+            setColumn(reel, [pick(),pick(),pick()]);
+            ticks++;
+            if(ticks >= 14){
+              clearInterval(timer);
+              setColumn(reel, finalSymbols);
+              reel.classList.remove("spinning");
+              beep(420+delay/3, 75);
+              resolve();
+            }
+          }, 55);
+        }, delay);
+      });
+    }
+
+    async function spin({free=false}={}){
+      if(state.spinning) return;
+      if(!free && state.balance + 1e-9 < state.bet){
+        showToast("Not enough virtual coins");
+        state.auto=false; updateUI(); return;
+      }
+
+      state.spinning = true;
+      spinBtn.disabled = true;
+      if(!free){
+        state.balance -= state.bet;
+      }else if(state.bonusSpins>0){
+        state.bonusSpins--;
+      }
+      state.win=0;
+      updateUI();
+      beep(280, 90, "triangle");
+
+      const feature = state.bonusSpins > 0;
+      const finalCols = [
+        [pick(), pick(), pick()],
+        [pick(), pick(), pick()],
+        [pick(), pick(), pick()]
+      ];
+
+      await Promise.all(reels.map((r,i)=>animateReel(r,finalCols[i],i*170)));
+
+      const line = getCenterLine();
+      const mult = evaluate(line,state.bet,feature);
+      const payout = state.bet * mult;
+      state.win = payout;
+      state.balance += payout;
+
+      if(mult > 0){
+        beep(760,120,"sine");
+        setTimeout(()=>beep(980,120,"sine"),130);
+        showToast(feature ? `BONUS WIN ${money(payout)}` : `WIN ${money(payout)}`);
+        pushHistory(`+${money(payout)}`);
+      }else{
+        pushHistory(`-${money(state.bet)}`);
+      }
+
+      if(state.bonusSpins > 0){
+        pushHistory(`BONUS ${state.bonusSpins} left`);
+      }
+      save();
+      updateUI();
+
+      state.spinning=false;
+      spinBtn.disabled=false;
+
+      if(state.auto){
+        setTimeout(()=>spin({free:false}),750);
+      }
+    }
+
+    document.getElementById("minusBtn").addEventListener("click",()=>{
+      if(state.spinning) return;
+      state.bet = Math.max(0.10, +(state.bet-0.10).toFixed(2));
+      updateUI(); save(); beep(320,45);
+    });
+
+    document.getElementById("plusBtn").addEventListener("click",()=>{
+      if(state.spinning) return;
+      state.bet = Math.min(5.00, +(state.bet+0.10).toFixed(2));
+      updateUI(); save(); beep(520,45);
+    });
+
+    spinBtn.addEventListener("click",()=>spin());
+
+    autoBtn.addEventListener("click",()=>{
+      state.auto = !state.auto;
+      updateUI();
+      if(state.auto && !state.spinning) spin();
+    });
+
+    soundBtn.addEventListener("click",()=>{
+      state.sound=!state.sound; updateUI(); beep(600,60);
+    });
+
+    document.getElementById("buyFeature").addEventListener("click",()=>{
+      if(state.spinning) return;
+      const cost = 50;
+      if(state.balance < cost){
+        showToast("Need 50 virtual coins");
+        return;
+      }
+      state.balance -= cost;
+      state.bonusSpins += 5;
+      updateUI(); save();
+      showToast("5-spin bonus feature activated");
+      beep(700,100);
+      setTimeout(()=>beep(900,120),120);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click",()=>{
+      if(state.spinning) return;
+      state.balance=100; state.bet=.30; state.win=0; state.bonusSpins=0; state.auto=false; state.history=[];
+      save(); updateUI(); renderInitial(); showToast("Demo reset to 100.00 coins");
+    });
+
+    document.getElementById("infoBtn").addEventListener("click",()=>{
+      document.getElementById("modalBackdrop").classList.add("show");
+    });
+    document.getElementById("closeModal").addEventListener("click",()=>{
+      document.getElementById("modalBackdrop").classList.remove("show");
+    });
+    document.getElementById("modalBackdrop").addEventListener("click",e=>{
+      if(e.target.id==="modalBackdrop") e.currentTarget.classList.remove("show");
+    });
+
+    renderInitial();
+    document.getElementById("historyList").innerHTML = state.history.map(x=>`<span>${x}</span>`).join("");
+    updateUI();
+  </script>
+</body>
+</html>
